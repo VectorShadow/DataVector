@@ -1,0 +1,11 @@
+Transmit data as bytestreams, where each byte translates directly to a char in the range 32-126.
+
+Individual transmissions are bounded by curly braces, individual elements bounded by pipes, so:
+
+{dataElement|dataElement|dataElement|dataElement}
+
+Parse an incoming bytestream as in similar systems, separating the stream into transmissions and handling them chronologically.
+
+Error handling for corrupted packets.
+
+Encryption needs to be tweaked to avoid encrypting anything as a reserved symbol.
