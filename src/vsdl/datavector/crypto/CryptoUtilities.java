@@ -28,8 +28,14 @@ public class CryptoUtilities {
                     "String " + alphaNumericString + " contained non-alphanumeric characters."
             );
         }
-        //todo - get int val from each char, sum as hex?
-        return null;
+        if (alphaNumericString.charAt(0) == '0') {
+            throw new IllegalArgumentException("Input string must not contain leading 0s.");
+        }
+        return new BigInteger(alphaNumericString.toLowerCase(), Character.MAX_RADIX);
+    }
+
+    public static String toAlphaNumeric(BigInteger bigInteger) {
+        return bigInteger.toString(Character.MAX_RADIX);
     }
 
 }
