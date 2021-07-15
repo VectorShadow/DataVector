@@ -15,19 +15,18 @@ public class CryptoUtilities {
         return ((c >= DIGIT_0 && c <= DIGIT_9) || (c >= ALPHA_A && c <= ALPHA_Z) || (c >= ALPHA_a && c <= ALPHA_z));
     }
 
-    public static boolean isAlphaNumeric(String s) {
+    public static void checkAlphaNumeric(String s) {
         for (Character c : s.toCharArray()) {
-            if (!isAlphaNumeric(c)) return false;
+            if (!isAlphaNumeric(c)) {
+                throw new IllegalArgumentException(
+                        "Input contained non-alphanumeric characters."
+                );
+            }
         }
-        return true;
     }
 
     public static BigInteger fromAlphaNumeric(String alphaNumericString) {
-        if (!isAlphaNumeric(alphaNumericString)) {
-            throw new IllegalArgumentException(
-                    "String " + alphaNumericString + " contained non-alphanumeric characters."
-            );
-        }
+        checkAlphaNumeric(alphaNumericString);
         if (alphaNumericString.charAt(0) == '0') {
             throw new IllegalArgumentException("Input string must not contain leading 0s.");
         }

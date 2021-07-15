@@ -24,8 +24,8 @@ public class CryptoUtilitiesTest {
 
     @Test
     public void testIsAlphaNumericString() {
-        assert isAlphaNumeric("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
-        assert !isAlphaNumeric("testP@$$w0r[)");
+        checkAlphaNumeric("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+        assertThrows(IllegalArgumentException.class, () -> checkAlphaNumeric("testP@$$w0r[)"));
     }
 
     @Test

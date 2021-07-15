@@ -35,7 +35,7 @@ public class RSA {
         return plainText.modPow(E, publicKey); //C = P^e mod n
     }
 
-    public static void generateSessionKeys() {
+    private static void generateSessionKeys() {
         final BigInteger DIFF = BigInteger.valueOf(2L).pow(1000); //2^1000, the minimum difference between p and q
         BigInteger p, q, phiN; //as in RSA description
         final SecureRandom SECURE_RANDOM = new SecureRandom();
