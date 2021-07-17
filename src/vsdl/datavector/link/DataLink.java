@@ -1,6 +1,5 @@
 package vsdl.datavector.link;
 
-import vsdl.datavector.api.DataMessageHandler;
 import vsdl.datavector.elements.DataMessage;
 
 import static vsdl.datavector.transforms.ByteTransformer.*;
@@ -13,15 +12,16 @@ public class DataLink extends Thread {
     private static final int MAX_BUFFER = 4096;
 
     private final Socket SOCK;
-    private final DataMessageHandler HANDLER;
 
     private boolean isActive = true;
 
     private String incompleteMessage = "";
 
-    public DataLink(Socket s, DataMessageHandler dmh) {
+    private final LinkSession LINK_SESSION;
+
+    public DataLink(Socket s, LinkSession l) {
         SOCK = s;
-        HANDLER = dmh;
+        LINK_SESSION = l;
     }
 
     public void deactivate() {
@@ -51,7 +51,7 @@ public class DataLink extends Thread {
             //reset the stream buffer
             streamBuffer = new byte[MAX_BUFFER];
         } while (isActive);
-        HANDLER.handleDataLinkClosure(this);
+        LINK_SESSION.close();
     }
 
     private void processNewData(byte[] data, int size) {
@@ -60,8 +60,6 @@ public class DataLink extends Thread {
             asChars[i] = toChar(data[i]);
         }
         StringBuilder messageBuilder = new StringBuilder();
-        String partialMessage;
-        DataMessage completeMessage;
         int dataIndex = 0;
         boolean openMessage = incompleteMessage.length() > 0;
         do {
@@ -72,9 +70,8 @@ public class DataLink extends Thread {
                     //stream error, two headers before a trailer. Dump all open messages as corrupt.
                     incompleteMessage = "";
                     messageBuilder = new StringBuilder();
-                    HANDLER.handleDataLinkError(
-                            new IllegalStateException("Stream error - multiple headers before trailer. Buffer dumped."),
-                            this
+                    LINK_SESSION.error(
+                            new IllegalStateException("Stream error - multiple headers before trailer. Buffer dumped.")
                     );
                 }
                 //we now have an open message
@@ -83,21 +80,17 @@ public class DataLink extends Thread {
                 if (!openMessage) {
                     //stream error, trailer with no header. Dump all open messages as corrupt.
                     incompleteMessage = "";
-                    messageBuilder = new StringBuilder();
-                    HANDLER.handleDataLinkError(
-                            new IllegalStateException("Stream error - trailer before header. Buffer dumped."),
-                            this
+                    LINK_SESSION.error(
+                            new IllegalStateException("Stream error - trailer before header. Buffer dumped.")
                     );
                 }
                 //we can now close our open message
                 openMessage = false;
-                //then we create a DataMessage from any pre-existing incomplete message our current message
-                completeMessage = new DataMessage(incompleteMessage + messageBuilder);
-                //then reset both
+                //handle receiving the completed DataMessage
+                LINK_SESSION.messageReceived(new DataMessage(incompleteMessage + messageBuilder));
+                //then reset inputs
                 incompleteMessage = "";
                 messageBuilder = new StringBuilder();
-                //finally handle the completed DataMessage
-                HANDLER.handle(completeMessage, this);
             } // else do nothing
         } while (dataIndex < size);
         //if we have an incomplete message, save it for the next stream read iteration
