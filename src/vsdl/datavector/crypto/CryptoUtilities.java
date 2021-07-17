@@ -48,7 +48,7 @@ public class CryptoUtilities {
                 ++i;
             }
         }
-        return sb.toString();
+        return sb.toString().toLowerCase();
     }
 
 }

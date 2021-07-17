@@ -9,6 +9,7 @@ public class Encryption {
         return ""; //todo
     }
 
+    //todo - update this to ensure the result is alphanumeric, or it will not be transmittable!
     public static String encryptDecrypt(String sharedSecretKey, String plainTextMessage) {
         byte[] in = plainTextMessage.getBytes();
         byte[] key = sharedSecretKey.getBytes();
