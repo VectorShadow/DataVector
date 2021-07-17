@@ -73,7 +73,8 @@ public class DataLink extends Thread {
                     incompleteMessage = "";
                     messageBuilder = new StringBuilder();
                     HANDLER.handleDataLinkError(
-                            new IllegalStateException("Stream error - multiple headers before trailer. Buffer dumped.")
+                            new IllegalStateException("Stream error - multiple headers before trailer. Buffer dumped."),
+                            this
                     );
                 }
                 //we now have an open message
@@ -84,7 +85,8 @@ public class DataLink extends Thread {
                     incompleteMessage = "";
                     messageBuilder = new StringBuilder();
                     HANDLER.handleDataLinkError(
-                            new IllegalStateException("Stream error - trailer before header. Buffer dumped.")
+                            new IllegalStateException("Stream error - trailer before header. Buffer dumped."),
+                            this
                     );
                 }
                 //we can now close our open message
@@ -95,7 +97,7 @@ public class DataLink extends Thread {
                 incompleteMessage = "";
                 messageBuilder = new StringBuilder();
                 //finally handle the completed DataMessage
-                HANDLER.handle(completeMessage);
+                HANDLER.handle(completeMessage, this);
             } // else do nothing
         } while (dataIndex < size);
         //if we have an incomplete message, save it for the next stream read iteration
