@@ -1,6 +1,7 @@
 package vsdl.datavector.crypto;
 
 import java.math.BigInteger;
+import java.util.Random;
 
 public class CryptoUtilities {
 
@@ -35,6 +36,19 @@ public class CryptoUtilities {
 
     public static String toAlphaNumeric(BigInteger bigInteger) {
         return bigInteger.toString(Character.MAX_RADIX);
+    }
+
+    public static String randomKey(int length) {
+        StringBuilder sb = new StringBuilder();
+        Random rng = new Random();
+        for (int i = 0; i < length;) {
+            char c = (char) rng.nextInt(Byte.MAX_VALUE);
+            if (isAlphaNumeric(c)) {
+                sb.append(c);
+                ++i;
+            }
+        }
+        return sb.toString();
     }
 
 }

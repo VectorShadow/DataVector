@@ -44,5 +44,13 @@ public class CryptoUtilitiesTest {
         assertThrows(IllegalArgumentException.class, () -> fromAlphaNumeric("01"));
     }
 
+    @Test
+    public void testRandomKey() {
+        for (int i = 0; i < 257; i +=16) {
+            String s = randomKey(i);
+            assert s.length() == i;
+        }
+    }
+
 
 }

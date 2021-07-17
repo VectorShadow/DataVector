@@ -1,12 +1,15 @@
 package vsdl.datavector.elements;
 
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
 import static vsdl.datavector.transforms.ByteTransformer.*;
 
 public class DataMessage {
 
     public static final char HEADER = '{';
-    public static final char TRAILER = '}';
     public static final char SEPARATOR = '|';
+    public static final char TRAILER = '}';
 
     public static final byte MIN_VAL = 0x20;
     public static final byte MAX_VAL = 0x7e;
@@ -27,6 +30,15 @@ public class DataMessage {
     @Override
     public String toString() {
         return TEXT;
+    }
+
+    public ArrayList<String> toBlocks() {
+        StringTokenizer stringTokenizer = new StringTokenizer(TEXT, "" + HEADER + SEPARATOR + TRAILER, false);
+        ArrayList<String> blocks = new ArrayList<>();
+        while (stringTokenizer.hasMoreTokens()) {
+            blocks.add(stringTokenizer.nextToken());
+        }
+        return blocks;
     }
 
     public void validate() {
