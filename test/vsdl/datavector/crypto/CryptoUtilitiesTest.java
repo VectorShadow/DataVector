@@ -2,6 +2,8 @@ package vsdl.datavector.crypto;
 
 import org.junit.jupiter.api.Test;
 
+import java.math.BigInteger;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static vsdl.datavector.crypto.CryptoUtilities.*;
 
@@ -46,9 +48,9 @@ public class CryptoUtilitiesTest {
 
     @Test
     public void testRandomKey() {
-        for (int i = 0; i < 257; i +=16) {
-            String s = randomKey(i);
-            assert s.length() == i;
+        for (int i = 4; i < 257; i +=16) {
+            BigInteger bi = randomKey(i);
+            assert toAlphaNumeric(bi).length() == i;
         }
     }
 

@@ -38,17 +38,18 @@ public class CryptoUtilities {
         return bigInteger.toString(Character.MAX_RADIX);
     }
 
-    public static String randomKey(int length) {
+    public static BigInteger randomKey(int length) {
         StringBuilder sb = new StringBuilder();
         Random rng = new Random();
         for (int i = 0; i < length;) {
             char c = (char) rng.nextInt(Byte.MAX_VALUE);
-            if (isAlphaNumeric(c)) {
+            //prevent non alpha symbols and leading zeros
+            if (isAlphaNumeric(c) && !(i == 0 && c == '0')) {
                 sb.append(c);
                 ++i;
             }
         }
-        return sb.toString().toLowerCase();
+        return new BigInteger(sb.toString(), Character.MAX_RADIX);
     }
 
 }
