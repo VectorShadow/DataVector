@@ -54,5 +54,28 @@ public class CryptoUtilitiesTest {
         }
     }
 
-
+    @Test
+    public void testSaltAndHash() {
+        final int count = 64;
+        final String[] randomSalts = new String[count];
+        final String[] randomPasswords = new String[count];
+        final String[] randomHashes = new String[count];
+        final String[] fixedPasswordHashes = new String[count];
+        final String fixedPassword = "passw0rd";
+        for (int i = 0; i < count; ++i) {
+            randomSalts[i] = randomAlphaNumericString(8);
+            randomPasswords[i] = randomAlphaNumericString(16);
+            final String saltedRandomPassword = salt(randomPasswords[i], randomSalts[i]);
+            final String saltedFixedPassword = salt(fixedPassword, randomSalts[i]);
+            randomHashes[i] = hash(saltedRandomPassword);
+            fixedPasswordHashes[i] = hash(saltedFixedPassword);
+        }
+        for (int i = 0; i < count; ++i) {
+            for (int j = 0; j < count; ++j) {
+                if (i == j) continue;
+                assert !randomHashes[i].equals(randomHashes[j]);
+                assert !fixedPasswordHashes[i].equals(fixedPasswordHashes[j]);
+            }
+        }
+    }
 }

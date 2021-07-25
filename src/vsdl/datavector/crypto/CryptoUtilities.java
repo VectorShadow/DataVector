@@ -38,7 +38,7 @@ public class CryptoUtilities {
         return bigInteger.toString(Character.MAX_RADIX);
     }
 
-    public static BigInteger randomKey(int length) {
+    public static String randomAlphaNumericString(int length) {
         StringBuilder sb = new StringBuilder();
         Random rng = new Random();
         for (int i = 0; i < length;) {
@@ -49,7 +49,27 @@ public class CryptoUtilities {
                 ++i;
             }
         }
-        return new BigInteger(sb.toString(), Character.MAX_RADIX);
+        return sb.toString().toLowerCase();
     }
 
+    public static BigInteger randomKey(int length) {
+        return new BigInteger(randomAlphaNumericString(length), Character.MAX_RADIX);
+    }
+
+    public static String hash(String saltedPassword) {
+        BigInteger i = fromAlphaNumeric(saltedPassword);
+        return toAlphaNumeric(
+                new BigInteger(
+                        Integer.toString(
+                                i.hashCode(),
+                                Character.MAX_RADIX
+                        ),
+                        Character.MAX_RADIX
+                )
+        );
+    }
+
+    public static String salt(String password, String salt) {
+        return salt + password;
+    }
 }
