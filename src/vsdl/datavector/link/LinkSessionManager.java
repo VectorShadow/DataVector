@@ -23,7 +23,6 @@ public class LinkSessionManager {
 
     public LinkSession addSession(Socket s) {
         LinkSession ls = new LinkSession(s, HANDLER);
-        System.out.println("Created session with ID: " + ls.getId());
         SESSIONS.put(ls.getId(), ls);
         return ls;
     }
